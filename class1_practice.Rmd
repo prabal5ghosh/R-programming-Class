@@ -1,0 +1,307 @@
+---
+title: "R Notebook-CLASS-1"
+output:
+  html_document:
+    df_print: paged
+  html_notebook: default
+  pdf_document: default
+---
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*.
+
+```         
+31*78
+```
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+
+# Ex-1
+
+```{r}
+a <- 5*3
+a
+```
+
+```{r}
+help(log)
+```
+
+```{r}
+a<-1
+b<- (-6)
+c<-1
+s1<- (-b+sqrt(b^2 - 4*a*c))/(2*a)
+s2<- (-b-sqrt(b^2 - 4*a*c))/(2*a)
+print(s1)
+print(s2)
+```
+
+# Vectros
+
+```{r}
+vector1<- c(1,2,3)
+vector1
+class(vector1)
+vect2<- c('i','n','d','i','a')
+vect2
+class(vect2)
+vect3<-c(1,2,'i','p')
+vect3
+class(vect3)
+vect4<-c("italy"=10,"canada"=20,"usa"=30 )
+vect4
+class(vect4)
+seq(1,10)
+1:5
+names(vect4)
+vect4["italy"]
+vect4[2]
+vect4[1:3]
+vect4[c(1,3)]
+
+```
+
+```{r}
+a<- c(1,"canada",2)
+class(a)
+vect3<-c(1,2,'i','v')
+class(vect3)
+```
+
+```{r}
+x<- 1:10
+x
+y<- as.character(x)
+y
+as.numeric(y)
+```
+
+# matrix
+
+```{r}
+mat<- matrix(1:12,nrow = 4,ncol = 3)
+mat
+mat[2,2]
+mat[2,]
+mat[,3]
+mat[,2:3]
+mat[1,2:3]
+
+
+```
+
+```{r}
+as.data.frame(mat)
+```
+
+# list
+
+```{r}
+list1=list(1,2,3)
+list1
+mylist1=list(name="prabal",degree="msc",course="dsai")
+mylist1
+out=t.test(1:10,c(7:20))
+out
+```
+
+```{r}
+a<-c(1,2,3,4)
+b<-c("d","e","f","g")
+c<-c("hi","bp","np","gh")
+df<-data.frame(a,b,c)
+df
+df[1:3,1:2]
+df[1,2]
+df[1,]
+df[,3]
+```
+
+```{r}
+new_c1<- c("kol","hol","jol","pol")
+df$city<- new_c1
+df
+subset(df,a>2)
+```
+
+# Import Library
+
+```{r}
+library(dslabs)
+data(murders)
+class(murders)
+```
+
+```{r}
+str(murders)
+```
+
+```{r}
+head(murders)
+```
+
+```{r}
+names(murders)
+```
+
+```{r}
+murders$population
+```
+
+```{r}
+plot(1:10,(1:10)^4)
+```
+
+```{r}
+plot(1:10,(1:10)^4,xlab = 'val1',ylab = 'val2',pch=19,type = 'b',col='red',main = "Plot1",cex=3,lty=3)
+
+```
+
+```{r}
+library(RColorBrewer)
+barplot(1:4,col=brewer.pal(4,"Set1"))
+```
+
+```{r}
+barplot(1:4,col=c("red","green"))
+
+
+```
+
+# Scatter plot
+
+```{r}
+x<- murders$population/10^6
+y<- murders$total
+plot(x,y,xlim = c(0,40), ylim =c(0,1500),pch=19,xlab = 'population',ylab = 'total',col='red',main = "Murders")
+legend("bottomright",legend = "data points",pch=19,col = "red")
+abline(a=0,b=30,lty=2,lwd=2.5,col=("blue"))
+```
+
+# BOX PLOT
+
+```{r}
+murders$rate<- with(murders,total/population * 100000)
+head(murders)
+
+boxplot(rate~region, data = murders)
+```
+
+# Histogram
+
+```{r}
+x<- with(murders,total/population * 100000)
+hist(x)
+murders$state[which.max(x)]
+
+```
+
+```{r}
+x= runif(100,0,1)
+par(mflow=c(1,2))
+hist(x)
+hist(x, breaks=2)
+hist(x, breaks=100)
+
+```
+
+# Density plot
+
+```{r}
+
+x= runif(100,0,1)
+
+hist(x, freq = FALSE)
+# hist(x, breaks=2)
+# hist(x, breaks=100)
+f=density(x)
+lines(f,col="red",lty=2,lwd=2.5)
+```
+
+# QQ PLOT
+
+```{r}
+
+x= runif(100,0,1)
+qqnorm(x)
+```
+
+# pie charts
+
+```{r}
+
+pie(summary(murders$region))
+```
+
+# Pair Plot
+
+```{r}
+
+x<-murders[,4:6]
+pairs(x,col= as.numeric(murders$region),pch=as.numeric(murders$region))
+```
+IF ELSE AND LOOPS 
+===
+```{r}
+x<-10
+if(x<20){
+  print("hi i am in france")
+}
+```
+
+```{r}
+
+x<-10
+if(x>20){
+  print("hi i am in france")
+}else{
+  print(" Hi I am in USA")
+}
+```
+```{r}
+
+x<-9
+if(x>20){
+  print("hi i am in france")
+}else if(x <10){
+  print(" I am in Germany")
+  }else{
+  print(" Hi I am in USA")
+}
+```
+```{r}
+runif(1,0,10)
+```
+
+```{r}
+
+x<-9
+y<- if(x>20){
+  "hi i am in france"
+}else if(x <10){
+  " I am in Germany"
+  }else{
+  " Hi I am in USA"
+  }
+y
+```
+```{r}
+
+for(i in 1:10){
+  print(i)
+}
+```
+
+```{r}
+count<-10
+
+while(count>1){
+  print(count)
+  count<- count-1
+}
+```
+
