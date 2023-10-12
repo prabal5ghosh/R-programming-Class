@@ -1,0 +1,103 @@
+---
+title: "R Notebook"
+output:
+  html_document:
+    df_print: paged
+  html_notebook: default
+  pdf_document: default
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+```{r}
+plot(cars)
+```
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+
+Exercise 1 - Data normalization
+===
+Data normalization
+1. Create a function that normalizes a vector:
+x_new = (x-mean(x))/sd(x)
+2. Use this function on the iris dataset so that
+each column is normalized
+3. You can also make the function more general
+x_new = (x-a)/b
+4. use it to preprocess the data with « min-max » 
+normalization ( x-min/(max-min))
+===
+
+```{r}
+
+fn_norm<- function(x){
+  x_new <- (x-mean(x))/sd(x)
+  return (x_new)
+}
+value<- fn_norm(c(1,2,3,4,5))
+print(value)
+```
+```{r}
+data("iris")
+head(iris,5)
+```
+```{r}
+install.packages("dplyr")
+library(dplyr)
+```
+
+```{r}
+
+colSums<- apply(iris[,1:4],2,fn_norm)
+colSums
+
+```
+```{r}
+fn_norm_gen<- function(x,a,b){
+  x_new <- (x-a)/b
+  return (x_new)
+}
+value_gen<- apply(iris[,1:4],2,fn_norm_gen,1,2)
+print(value_gen)
+```
+4. use it to preprocess the data with « min-max » 
+normalization ( x-min/(max-min))
+===
+
+```{r}
+fn_norm_gen_mm<- function(x,min1,max1){
+  x_new <- (x-min1)/(max1-min1)
+  return (x_new)
+}
+
+for(i in 1:4){
+  min1<- min(iris[,i])
+  max1<- max(iris[,i])
+  iris[,i]=fn_norm_gen_mm(iris[,i],min1,max1)
+
+  
+}
+iris
+
+```
+
+
+
+```{r}
+colMeans((iris[,-5]))
+
+apply(iris[,-5],2,mean)
+```
+
+```{r}
+apply(iris[,-5],2,sd)
+sapply(iris[,-5],sd)
+
+```
+
