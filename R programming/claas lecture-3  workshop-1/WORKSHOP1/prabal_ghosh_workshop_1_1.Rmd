@@ -1,0 +1,547 @@
+---
+title: "PRABAL GHOSH WORKSHOP-1 R Notebook"
+output:
+  html_notebook: default
+  html_document:
+    df_print: paged
+  pdf_document: default
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+```{r}
+# plot(cars)
+```
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+
+
+# LESSION-1
+
+## Exercise 1: Simple Calculations 
+
+```{r}
+# 31 * 78
+31 * 78
+```
+```{r}
+# 697 / 41
+697 / 41
+```
+```{r}
+# Assign the value of 39 to x
+# Assign the value of 22 to y
+x<-39
+x
+y<-22
+y
+```
+```{r}
+# Make z the value of x - y
+z<- x-y
+print(z)
+```
+Calculate the square root of 2345, and perform a log2 transformation on the result
+```{r}
+
+sqrt(2345)
+log_2_value=log(sqrt(2345), base=exp(2))
+print(log_2_value)
+```
+
+## Exercise 2: Working with Vectors
+
+##### Create a vector called vec1 containing the numbers 2,5,8,12 and 16
+##### Use [lower]:[upper] notation to make a second vector called vec2 containing the numbers 5 to 9
+#####  Subtract vec2 from vec1 and look at the result
+#####  Use seq() to make a vector of 100 values starting at 2 and increasing by 3 each time and store it in a new variable
+#####  Extract the values at positions 5,10,15 and 20 in the vector of 100 values you made
+#####  Extract the values at positions 10 to 30 in the vector of 100 values you made
+
+```{r}
+# Create a vector called vec1 containing the numbers 2,5,8,12 and 16
+vec1<- c(2,5,8,12,16)
+vec1
+
+# Use [lower]:[upper] notation to make a second vector called vec2 containing the numbers 5 to 9
+vec2<- 5:9
+vec2
+
+# Subtract vec2 from vec1 and look at the result
+vec1-vec2
+
+# Use seq() to make a vector of 100 values starting at 2 and increasing by 3 each time and store it in a new variable
+
+# seq1=seq(2, 100, by = 3)
+# seq1
+
+my_vector <- seq(from = 2, by = 3, length.out = 100)
+my_vector
+
+# Extract the values at positions 5,10,15 and 20 in the vector of 100 values you made
+my_vector[c(5,10,15,20)]
+
+# Extract the values at positions 10 to 30 in the vector of 100 values you made
+my_vector[10:30]
+```
+##Exercise 3: Working with Vectors
+
+##### Use the accessor $ to extract the state abbreviations and assign them to the object a. What is the class of this object?
+
+##### Now use the square brackets to extract the state abbreviations and assign them to the object b. Use the identical function to determine if a and b are the same.
+
+##### The function table takes a vector and returns the frequency of each element. You can quickly see how many states are in each region by applying this function. Use this function in one line of code to create a table of states per region.
+
+```{r}
+
+library("dplyr")
+library(datasets)
+data(murders)
+class(murders)
+
+
+# Extract state abbreviations and assign to object 'a'
+a <- murders$abb
+
+# Determine the class of object 'a'
+class(a)
+
+# Extract state abbreviations using square brackets and assign to object 'b'
+b <- murders["abb"]
+b
+# Check if 'a' and 'b' are identical
+identical(a, b)
+
+# Create a table of states per region
+table(murders$region)
+head(murders,5)
+```
+```{r}
+murders
+```
+
+## Exercise 4: Reading in data from a file
+
+##### Set your working directory to where the data files are stored. Make sure that the folder of data files has been unzipped. e.g. setwd("D:/Data_folder")
+
+#####  4a
+#####  Read the file ‘small_file.txt’ into a new data structure. This is a tab delimited file so you should use read.delim(). Remember to assign a name to the data that you read in using the assignment operator, e.g. 
+#####  my.small.file <- read.delim(“small_file.txt”)
+#####  View the data set to check that it has imported correctly.
+
+#####  4b
+#####  Read the file ‘Child_Variants.csv’ into a new data structure. This is a comma separated file so you should use read.csv(). Again, remember to assign a name to the data when you import it.
+#####  Use head and View to look at the data set to check that it has imported correctly.
+#####  Calculate the mean of the column named MutantReadPercent. Think about how you are going to access a single column first (probably by using the $ notation), then once you can access the data pass it to the mean function.
+
+```{r}
+# Set your working directory to where the data files are stored. Make sure that
+# the folder of data files has been unzipped. e.g. setwd("D:/Data_folder")
+
+# setwd("C:/Users/praba/Desktop/uca1/M1/R programming/claas lab1 -lecture-3")
+
+
+# 4a
+# Read the file ‘small_file.txt’ into a new data structure. This is a tab delimited file so you should use read.delim(). Remember to assign a name to the data that you read in using the assignment operator, e.g. 
+# my.small.file <- read.delim(“small_file.txt”)
+# View the data set to check that it has imported correctly.
+
+data_small <- read.delim('C://Users//praba//Desktop//uca1//M1//R programming//claas lab1 -lecture-3//small_file.txt',header=FALSE, stringsAsFactors=FALSE)
+head(data_small, 5)
+# View(data_small)
+
+
+
+# 4b
+# Read the file ‘Child_Variants.csv’ into a new data structure. This is a comma separated file so you should use read.csv(). Again, remember to assign a name to the data when you import it.
+# Use head and View to look at the data set to check that it has imported correctly.
+# Calculate the mean of the column named MutantReadPercent. Think about how you are going to access a single column first (probably by using the $ notation), then once you can access the data pass it to the mean function.
+
+#Read the file ‘Child_Variants.csv’ into a new data structure. 
+data_childvariant<-read.csv("C://Users//praba//Desktop//uca1//M1//R programming//claas lab1 -lecture-3//Child_Variants.csv")
+head(data_childvariant,3)
+# View(data_childvariant)
+
+
+#Calculate the mean of the column named MutantReadPercent
+mean(data_childvariant$MutantReadPercent)
+
+
+```
+##Exercise 5:
+
+##### Using the dataset murder:
+
+##### A. Create a histogram of the state populations.
+
+#####  B. Generate boxplots of the state populations by region.
+
+
+```{r}
+
+# Using the dataset murder:
+
+
+data4 <- read.csv('C:\\Users\\praba\\Desktop\\uca1\\M1\\R programming\\claas lab1 -lecture-3\\Child_Variants.csv')
+head(data4)
+mean(data4$MutantReadPercent)
+
+# A. Create a histogram of the state populations.
+hist(murders$population,
+     breaks=50,
+     main = "Histogram of the Murders dataset by state population",
+     xlab = "Observations",   
+     ylab = "Frequency",      
+     col = "green",        
+     border = "yellow",)
+
+# B. Generate boxplots of the state populations by region.
+murders$rate<- with(murders,total/population * 100000)
+
+boxplot(rate~region, data = murders)
+
+
+```
+
+## Exercise 6: basic plots
+
+##### Read in the file ‘brain_bodyweight.txt’. This is a tab delimited file so you can use read.delim(). The first column contains species names, not data, so use row.names=1 to set these up correctly in your data frame.
+
+#####  Log transform the data (base 2).
+
+#####  Create a scatterplot with default parameters with the log transformed data.
+
+```{r}
+# Read in the file ‘brain_bodyweight.txt’. This is a tab delimited file so you can use read.delim(). The first column contains species names, not data, so use row.names=1 to set these up correctly in your data frame.
+
+# Log transform the data (base 2).
+
+# Create a scatterplot with default parameters with the log transformed data.
+
+# setwd("C:/Users/praba/Desktop/uca1/M1/R programming/claas lab1 -lecture-3")
+data_brain<- read.delim("C://Users//praba//Desktop//uca1//M1//R programming//claas lab1 -lecture-3//brain_bodyweight.txt",row.names=1 )
+head(data_brain)
+log_1<-log2(data_brain)
+
+plot(log_1,col='red')
+
+```
+
+## Exercise 7:
+Multiplication Table: print the multiplication table of a number (entered by the user) from 1 to 10.
+
+```{r}
+
+# Hints:
+# Here, we ask the user for a number which is stored in num variable.
+# Then, the for loop is iterated 10 times from i equals to 1 to i equals to 10.
+
+
+multip1<- function(x){
+
+  for(i in 1:10){
+    s=x*i
+    cat(x,"*",i,"=",s,"\n")
+    # print(paste(x,"*",i,"=",s))
+  }
+
+}
+var1 = as.integer(readline(prompt = "Enter your number : "))
+value<- multip1(var1)
+```
+```{r}
+multip1<- function(x){
+  list1<-list()
+  for(i in 1:10){
+    s=x*i
+    list1[[i]]=s
+  }
+  
+  return(list1)
+}
+value1<- multip1(7)
+print(value1)
+```
+## Exercise 8:
+
+Write a program to check if the input number is prime or not
+
+```{r}
+num <- as.integer(readline(prompt='please enter a number to check that its prime or not : '))
+eras <- function(num){
+  if(num < 2) {
+    return(FALSE)
+  }else{
+    candidates <- 1:num
+    candidates[1] <- 0
+    for(i in 2:ceiling(sqrt(num))) {
+      if(candidates[i] > 0) {
+        if(floor(num/i) == num/i) {
+          return(FALSE)
+        }
+        for(j in candidates[i:floor(num/i)]) {
+          if(j > 0) {
+            candidates[i*j] <- 0
+          }
+        }
+      }
+    }
+  }
+  return(TRUE)
+}
+if(eras(num)) {
+  print(paste(num, ' is prime.'))
+}else{
+  print(paste(num, ' is not prime.'))
+}
+```
+
+
+# LESSION-2
+
+## Question 2: Fibonacci Sequence in R
+
+```{r}
+recur_fibo <- function(n) {
+    if(n <= 1) {
+        return(n)
+    } else {
+        return(recur_fibo(n-1) + recur_fibo(n-2))}}
+
+n=as.integer(readline('What is the number of terms: '))
+for(i in 0:(n-1)) {
+        print(recur_fibo(i))}
+
+```
+
+
+## Exercise 3: Program to Find GCD
+
+
+```{r}
+find_gcd <- function(a, b) {
+  if (a !=0 & b !=0){
+    smaller <- min(a, b)
+    gcd_result <- 1  # Initialize GCD to 1
+  
+    # Use a for loop to find the GCD
+    for (i in 1:smaller) {
+      if (a %% i == 0 && b %% i == 0) {
+        gcd_result <- i  # Update GCD if i perfectly divides both a and b
+      }
+    }
+  
+    return(gcd_result)}
+  return ("you should not insert 0 as input please insert again")
+
+}
+
+
+number1 <- as.integer(readline("Enter the first integer: "))
+number2 <- as.integer(readline("Enter the second integer: "))
+
+gcd_result <- find_gcd(number1, number2)
+cat("The GCD of", number1, "and", number2, "is", gcd_result, "\n")
+
+```
+
+
+## Exercise 5:
+
+```{r}
+data("iris")
+head(iris,5)
+data1=iris
+```
+
+Question 1
+Select the first three columns of the iris dataset using their column names. HINT: Use select().
+```{r}
+# install.packages("dplyr")
+library(dplyr)
+# select(data1,Sepal.Length,Sepal.Width,Petal.Length)
+# select(data1,Sepal.Length:Petal.Length)
+select(data1,1:3)
+```
+
+Question 2# 
+Select all the columns of the iris dataset except “Petal Width”. HINT: Use “-“.
+```{r}
+head(select(data1,-Petal.Width),6)
+```
+
+Question 3
+Select all columns of the iris dataset that start with the character string “P”.
+
+```{r}
+select (data1,starts_with("p"))
+```
+
+Question 4
+Filter the rows of the iris dataset for Sepal.Length >= 4.6 and Petal.Width >= 0.5.
+```{r}
+data1 %>% select(Petal.Length,Petal.Width) %>% filter(Petal.Length>1.5)
+```
+Question 5
+Pipe the iris data frame to the function that will select two columns (Sepal.Width and Sepal.Length). HINT: Use pipe operator.
+
+```{r}
+sepal_only <- iris %>% select(Sepal.Width, Sepal.Length)
+head(sepal_only,3)
+```
+
+Question 6
+Arrange rows by a particular column, such as the Sepal.Width. HINT: Use arrange().
+```{r}
+arrange(data1,  Sepal.Width)
+```
+
+Question 7
+Select three columns from iris, arrange the rows by Sepal.Length, then arrange the rows by Sepal.Width.
+```{r}
+data1 %>% select(Sepal.Length,Sepal.Width,Species) %>%arrange(Sepal.Length,Sepal.Width) 
+
+```
+
+#### Question 8
+Create a new column called proportion, which is the ratio of Sepal.Length to Sepal.Width. HINT: Use mutate().
+
+```{r}
+
+data1_modified <- mutate(data1, proportion = Sepal.Length / Sepal.Width)
+data1_modified
+```
+Question 9
+Compute the average number of Sepal.Length, apply the mean() function to the column Sepal.Length, and call the summary value “avg_slength”. HINT: Use summarize().
+```{r}
+data1  %>%group_by(Species)%>% summarize(avg_slength = mean(Sepal.Length))
+
+```
+
+
+## Exercise 6: Restructuring data into ‘tidy’ format
+
+##### You have been provided with three CSV data files (tidy_data1.csv, tidy_data2.csv, tidy_data3.csv).
+#####  After loading each of the data files think about the following.
+
+##### Which of the columns are annotations and which are measurements
+
+##### How many different types of measurement are there?
+
+##### Are all of the measurements of the same type in a single column?
+
+##### Do any annotation columns contain multiple pieces of information which have been concatenated together and would benefit from being split apart?
+##### Are any of the columns purely for annotation and might benefit from being split into another tibble to avoid duplication?
+#####  After tidying are there any NA values which should be removed?
+
+```{r}
+if (!requireNamespace("dplyr", quietly = TRUE)) {
+  install.packages("dplyr")
+}
+```
+```{r}
+ library(dplyr)
+```
+```{r}
+library(tidyr)
+
+```
+```{r}
+# setwd("C:/Users/praba/Desktop/uca1/M1/R programming/claas lab1 -lecture-3")
+data_tidy_1 <- read.csv("C://Users//praba//Desktop//uca1//M1//R programming//claas lab1 -lecture-3//tidy_data1.csv")
+
+data_tidy_2 <- read.csv("C://Users//praba//Desktop//uca1//M1//R programming//claas lab1 -lecture-3//tidy_data2.csv")
+
+data_tidy_3 <- read.csv("C://Users//praba//Desktop//uca1//M1//R programming//claas lab1 -lecture-3//tidy_data3.csv")
+```
+```{r}
+head(data_tidy_1,6)
+head(data_tidy_2,6)
+head(data_tidy_3,6)
+```
+
+ 
+### in data_tidy_1 ------> 4  different types of measurements
+
+### in data_tidy_2-----> Columns A to E represent measurements while the other columns are atomic annotations.
+### in data_tidy_3 ----> Columns WT_1 to KO_3 are measurements of two different genotypes with three replicates each
+```{r}
+str(data_tidy_1)   # Check the structure of the data
+cat("\n")
+str(data_tidy_2)   # Check the structure of the data
+cat("\n")
+str(data_tidy_3)   # Check the structure of the data
+```
+
+```{r}
+data_tidy_1 %>% 
+  mutate(id = row_number()) %>%
+  pivot_longer(cols=1:4, names_to='measurement', values_to='values') %>%
+  drop_na
+```
+
+```{r}
+data_tidy_2 %>% 
+  pivot_longer(cols=A:E, names_to='measurement', values_to='values') %>%
+  drop_na %>%
+  head
+```
+
+```{r}
+data_tidy_3 %>%
+  pivot_longer(cols=WT_1:KO_3, names_to='sample', values_to='values') %>%
+  separate(sample, into=c('genotype', 'replicate'), convert=TRUE, sep='_') %>% 
+  separate(Probe_ID, into=c('ID', 'Something'), convert=TRUE, sep='_', extra='merge') %>%
+  head
+```
+## Exercise 7:
+
+##### 1.Use the airquality dataset from base
+
+```{r}
+# Load the airquality dataset
+data("airquality")
+```
+
+##### 2.Compute the percentage p_na of missing values in a column
+
+```{r}
+percentage_missing_column <- sapply(airquality, function(column) mean(is.na(column)) * 100)
+percentage_missing_column
+
+# Ozone and  Solar.R cloumn has NA values
+```
+
+### 3.If p_na > 0,05  delete the column
+### 4.If p_na <= 0,05  replace the missing values by 0 or by the mean of the column, depending on a variable "type_na"
+```{r}
+
+percentage_missing_column<- sapply(airquality, function(column) mean(is.na(column)) * 100)
+
+for (col_name in names(percentage_missing_column)) {
+  p_na <- percentage_missing_column[col_name]
+  
+  if (p_na > 5) {
+    airquality[[col_name]] <- NULL
+  } else {
+    if (is.numeric(airquality[[col_name]])) {
+      airquality[is.na(airquality[[col_name]]), col_name] <- mean(airquality[[col_name]], na.rm = TRUE)
+    } else {
+      airquality[is.na(airquality[[col_name]]), col_name] <- 0
+    }
+  }
+}
+
+
+head(airquality)
+```
+
+
+
+

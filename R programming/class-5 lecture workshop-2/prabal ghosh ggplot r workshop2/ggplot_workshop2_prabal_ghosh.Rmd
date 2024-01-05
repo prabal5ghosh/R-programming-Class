@@ -1,0 +1,733 @@
+---
+title: "Workshop 2 : GGPLOT - PRABAL GHOSH"
+output:
+  html_document:
+    df_print: paged
+---
+
+# Exercise 1: Barplots and Distributions
+1- Load the data from small_file.txt using read_delim
+Plot out a barplot of the lengths of each sample from category A 
+Start by filtering the data to keep only Sample A samples 
+small %>% filter(Category == "A")
+Pass this filtered tibble to ggplot
+Your x aesthetic will be Sample and your y will be length
+Since the value in the data is the bar height you need to use geom_col 
+ 
+Plot out a barplot (using geom_bar) of the mean length for each category in small.file
+You will need to set stat="summary", fun="mean" in geom_bar so it plots the mean value
+ 
+Add a call to geom_jitter() to the last plot so you can also see the individual points
+Colour the points by Category and decrease the width of the jitter columns to get better separation. Make sure height is set to 0 
+If you don’t want to see the legend then you can set show.legend=FALSE in geom_jitter.
+ 
+2- Load the data from expression.txt using read_delim.
+Plot out the distribution of Expression values in this data.  You can try both geom_histogram and geom_density.  Try changing the color and fill parameters to make the plot look prettier.  In geom_histogram try changing the binwidth parameter to alter the resolution of the distribution.
+ 
+3- Load the data from cancer_stats.csv using read_delim.
+Plot a barplot (geom_col) of the number of Male deaths for all Sites. (x=Site, y=`Male Deaths`) make sure you let the RStudio auto-complete help you to fill in the Male Deaths column name so you get the correct backtick quotes around it.
+ 
+You won’t be able to show all of the categories so just show the first 5 (cancer %>% slice(1:5) %>% ggplot…)
+
+ 4- Load the data from child.variants.csv.
+Create a new variable in child.variants loaded from Child_Variants.csv called Good using mutate and if_else.  The value should be “GOOD” if QUAL == 200 otherwise it should be “BAD”
+Plot out a violin plot, using geom_violin() of the MutantReads for the two Good categories.
+
+
+```{r}
+data_small <- read.delim('C://Users//praba//Desktop//uca1//M1//R programming//class-5 workshop-2//small_file.txt',header=TRUE, stringsAsFactors=FALSE)
+head(data_small, 5)
+```
+
+Plot out a barplot of the lengths of each sample from category A 
+Start by filtering the data to keep only Sample A samples 
+small %>% filter(Category == "A")
+Pass this filtered tibble to ggplot
+Your x aesthetic will be Sample and your y will be length
+Since the value in the data is the bar height you need to use geom_col 
+
+```{r}
+
+
+
+library(ggplot2)
+```
+
+```{r}
+library("dplyr")
+```
+
+```{r}
+data_small %>% filter(Category == "A") %>% ggplot(aes(x = Sample, y = Length)) + geom_col(col="blue2",fill="red")
+
+
+```
+
+```{r}
+data_small %>% ggplot(aes(x = Category, y = Length,)) + 
+  geom_bar(aes(fill= Category),stat="summary" ,col="blue2", fun="mean",show.legend = FALSE)
+
+
+```
+
+
+
+```{r}
+data_small %>% ggplot(aes(x = Category, y = Length)) + geom_bar(stat="summary" ,col="blue2",fill="yellow", fun="mean",width=0.3)+ geom_jitter(aes(col =Category),height=0,width=.02,show.legend = TRUE)
+```
+
+
+
+
+
+
+2- Load the data from expression.txt using read_delim.
+Plot out the distribution of Expression values in this data.  You can try both geom_histogram and geom_density.  Try changing the color and fill parameters to make the plot look prettier.  In geom_histogram try changing the binwidth parameter to alter the resolution of the distribution.
+===
+
+```{r}
+# C://Users//praba//Desktop//uca1//M1//R programming//class-5 workshop-2//
+
+setwd('/Users/praba/Desktop/uca1/M1/R programming/class-5 workshop-2')
+data_expression= read.delim('expression.txt',header=TRUE, stringsAsFactors=FALSE)
+head(data_expression,6)
+```
+
+```{r}
+data_expression %>%
+  ggplot(aes(x=Expression)) + 
+  geom_histogram(fill="yellow", colour="red")
+
+```
+
+
+```{r}
+data_expression %>%
+  ggplot(aes(x=Expression)) + 
+  geom_histogram(binwidth = .5, fill="yellow", colour="red")
+
+```
+
+
+
+
+```{r}
+data_expression %>%
+  ggplot(aes(x=Expression)) + 
+  geom_density(colour="red", alpha=0.1,fill="green")
+
+
+```
+
+
+
+
+
+### 3- Load the data from cancer_stats.csv using read_delim.
+Plot a barplot (geom_col) of the number of Male deaths for all Sites. (x=Site, y=`Male Deaths`) make sure you let the RStudio auto-complete help you to fill in the Male Deaths column name so you get the correct backtick quotes around it.
+
+You won’t be able to show all of the categories so just show the first 5 (cancer %>% slice(1:5) %>% ggplot…)
+===
+
+```{r}
+setwd('/Users/praba/Desktop/uca1/M1/R programming/class-5 workshop-2')
+cancer_data<- read.csv("cancer_stats.csv")
+head(cancer_data)
+
+```
+
+```{r}
+cancer_data%>% slice(1:5) %>% ggplot(aes(x = Site, y = Male.Deaths)) + geom_col( ,col="blue2",fill="yellow",width=1)
+
+
+```
+
+
+```{r}
+cancer_data%>% slice(1:5) %>% ggplot(aes(x = Site)) + geom_bar(col="blue2",fill="yellow",width=1)
+
+
+```
+
+
+```{r}
+cancer_data%>% slice(1:5) %>% ggplot(aes(x = Site, y = Male.Deaths)) + geom_bar(stat="identity" ,col="blue2",fill="yellow",width=1)
+
+
+```
+
+
+
+### 4- Load the data from child.variants.csv.
+Create a new variable in child.variants loaded from Child_Variants.csv called Good using mutate and if_else.  The value should be “GOOD” if QUAL == 200 otherwise it should be “BAD”
+Plot out a violin plot, using geom_violin() of the MutantReads for the two Good categories.
+===
+
+```{r}
+child_data<- read.csv("Child_Variants.csv")
+head(child_data)
+```
+
+
+```{r}
+child_data %>% mutate(child_data, Good = if_else(QUAL == 200,"GOOD", "BAD" ) 
+)
+```
+
+```{r}
+child_data
+```
+
+
+
+```{r}
+child_data %>% mutate(child_data, Good = if_else(QUAL == 200,"GOOD", "BAD" ))  %>% ggplot(aes(y = log2(MutantReads), x = Good),) + geom_violin(col="blue2",fill="yellow")
+
+
+```
+
+
+
+
+
+
+# Exercise 2: Annotation, Scaling and Colours
+
+Use theme_set to set your ggplot theme to be theme_bw with a base_size of 12.  Replot one of your earlier plots to see how its appearance changed.
+
+In the cancer barplot you did in exercise 1 you had to exclude sites because you couldn’t show them on the x axis.  Use the coord_flip transformation to switch the x and y axes so you can remove the slice function which restricted you to 5 sites, and show all of the sites again.
+ 
+Load the data from brain_bodyweight.txt
+ 
+Plot a scatterplot of the brain against the body
+ 
+Change the axis labels (xlab and ylab) to say Brainweight (g) and Bodyweight (kg) and add a suitable title (ggtitle).
+ 
+Both brainweight and bodyweight are better displayed on a log scale – try implementing this in one of the ways below
+ 
+Turn the axes into log scale axes (scale_x_log10 and scale_y_log10)
+Modify the data to be log transformed when creating the aesthetic mapping (pass the column name into log10() when defining the aesthetic mapping in aes())
+Use mutate to modify the original data before passing it to ggplot
+ 
+Color the plot by Category, and change the colours to use the ColorBrewer “Set1” palette (scale_colour_brewer)
+ 
+Change the ordering of the categories to be “Domesticated”, “Wild”, “Extinct”
+
+Create a barplot of the brainweight of all species, coloured by their bodyweight.  Use a custom colour scheme for the colouring of the bars.  You will again need to use a log scale for the brain and bodyweight.
+
+
+### Use theme_set to set your ggplot theme to be theme_bw with a base_size of 12.  Replot one of your earlier plots to see how its appearance changed.
+
+```{r}
+theme_set(theme_bw(base_size=12))
+data_small %>% filter(Category == "A") %>% ggplot(aes(x = Sample, y = Length)) + geom_col(col="blue2",fill="red")
+
+
+```
+```{r}
+theme_set(theme_bw(base_size=12))
+data_small %>% ggplot(aes(x = Category, y = Length,)) + 
+  geom_bar(aes(fill= Category),stat="summary" ,col="blue2", fun="mean",show.legend = FALSE)
+
+
+```
+
+```{r}
+theme_set(theme_bw(base_size=12))
+data_small %>% ggplot(aes(x = Category, y = Length)) + geom_bar(stat="summary" ,col="blue2",fill="yellow", fun="mean",width=0.3)+ geom_jitter(aes(col =Category),height=0,width=.02,show.legend = TRUE)
+```
+
+```{r}
+theme_set(theme_bw(base_size=12))
+
+data_expression %>%
+  ggplot(aes(x=Expression)) + 
+  geom_density(colour="red", alpha=0.1,fill="green")
+
+
+```
+
+```{r}
+theme_set(theme_bw(base_size=12))
+child_data %>% mutate(child_data, Good = if_else(QUAL == 200,"GOOD", "BAD" ))  %>% ggplot(aes(y = log2(MutantReads), x = Good),) + geom_violin(col="blue2",fill="yellow")
+
+```
+```{r}
+theme_set(theme_bw(base_size=12))
+
+cancer_data%>% slice(1:5) %>% ggplot(aes(x = Site, y = Male.Deaths)) + geom_col( ,col="blue2",fill="yellow",width=1)
+
+```
+
+##In the cancer barplot you did in exercise 1 you had to exclude sites because you couldn’t show them on the x axis.  Use the coord_flip transformation to switch the x and y axes so you can remove the slice function which restricted you to 5 sites, and show all of the sites again.
+
+
+```{r}
+theme_set(theme_bw(base_size=12))
+
+cancer_data%>% ggplot(aes(x = Site, y = Male.Deaths)) + geom_col( ,col="blue2",fill="yellow",width=1)+coord_flip()
+
+```
+
+
+
+##Load the data from brain_bodyweight.txt
+
+Plot a scatterplot of the brain against the body
+===
+
+```{r}
+brain_data<- read.delim("brain_bodyweight.txt")
+head(brain_data,6)
+```
+###Plot a scatterplot of the brain against the body
+===
+
+```{r}
+brain_data %>% ggplot(aes(brain,body)) + geom_point(col="red")
+
+```
+
+
+
+
+###Change the axis labels (xlab and ylab) to say Brainweight (g) and Bodyweight (kg) and add a suitable title (ggtitle).
+===
+
+```{r}
+brain_data %>% ggplot(aes(brain,body)) + geom_point(col="red")+
+ggtitle("gg title")+
+xlab("Brainweight(g)")+
+ylab("Bodyweight(kg)")
+
+```
+###Both brainweight and bodyweight are better displayed on a log scale – try implementing this in one of the ways below
+Turn the axes into log scale axes (scale_x_log10 and scale_y_log10)
+Modify the data to be log transformed when creating the aesthetic mapping (pass the column name into log10() when defining the aesthetic mapping in aes())
+Use mutate to modify the original data before passing it to ggplot
+
+
+```{r}
+brain_data %>% ggplot(aes(log10(brain),log10(body))) + geom_point(col="red")+
+ggtitle("gg title_log")+
+xlab("Brainweight(g)")+
+ylab("Bodyweight(kg)")
+
+```
+
+```{r}
+brain_data %>% ggplot(aes(x=brain, y=body)) + geom_point(aes(colour=Category))+
+ggtitle("gg title")+
+xlab("Brainweight(g)")+
+ylab("Bodyweight(kg)")+scale_x_log10() + scale_y_log10() 
+
+
+```
+
+
+###Color the plot by Category, and change the colours to use the ColorBrewer “Set1” palette (scale_colour_brewer)
+
+
+
+```{r}
+brain_data %>% ggplot(aes(x=brain, y=body)) + geom_point(aes(colour=Category))+
+ggtitle("gg title")+
+xlab("Brainweight(g)")+
+ylab("Bodyweight(kg)")+
+scale_x_log10() +
+scale_y_log10() +
+scale_color_brewer(palette = "Set1")
+
+
+
+```
+
+###Change the ordering of the categories to be “Domesticated”, “Wild”, “Extinct”
+
+
+```{r}
+brain_data %>% mutate(Category= factor(Category,levels=c("Domesticated","Wild","Extinct"))) %>%
+ggplot(aes(x=brain, y=body)) + geom_point(aes(colour=Category))+
+ggtitle("gg title")+
+xlab("Brainweight(g)")+
+ylab("Bodyweight(kg)")+
+scale_x_log10() +
+scale_y_log10() +
+scale_color_brewer(palette = "Set1")
+
+
+
+```
+
+
+
+
+
+
+
+###Create a barplot of the brainweight of all species, coloured by their bodyweight.  Use a custom colour scheme for the colouring of the bars.  You will again need to use a log scale for the brain and bodyweight.
+
+
+```{r}
+brain_data%>% slice(1:5) %>%  ggplot(aes(x=Species,y=brain,fill= body)) + geom_bar(stat="identity" ,col="blue2",width=1)+
+  scale_fill_gradientn(colours=c("red","orange","green","blue","skyblue"))+
+labs(title = "Brain Weight of Species Colored by Log Body Weight") +coord_flip()
+```
+
+```{r}
+brain_data %>%  ggplot(aes(x=Species,y=log10(brain),fill= log10(body))) + geom_bar(stat="identity" ,col="blue2",width=1)+
+  scale_fill_gradientn(colours=c("red","orange","green","blue","skyblue"))+
+labs(title = "Brain Weight of Species Colored by Log Body Weight") +coord_flip()
+```
+```{r}
+brain_data %>% slice(1:5) %>% ggplot(aes(x=Species,y=log10(brain),fill= log10(body))) + geom_bar(stat="summary" ,col="blue2",width=1)+
+  scale_fill_gradientn(colours=c("red","orange","green","blue","skyblue"))
+```
+
+
+------------------------------------------
+
+# Exercise 3: Summary Overlays
+Load the data in treatments.csv.
+ 
+Plot a stripchart of the four conditions using geom_jitter()
+ 
+Overlay a boxplot of the same data along with the raw points
+ 
+Adjust the size and width of spread of the points in geom_jitter to something sensible
+Adjust the size of the lines in the boxplot
+Make sure geom_boxplot is drawn first so you can see everything
+Try colouring the points by the condition to see if it’s any clearer.
+ 
+Plot the same data as a barplot with errorbars for the Standard Error of the Mean (SEM)
+Use a geom_bar for the barplot with stat=”summary” and then use stat_summary with a geometry of errorbar with the default mean_se values.
+
+Take the same treatment data and pre-calculate a mean and sd from it using group_by and summarise.  Use these pre-calculated values to plot out the same barplot as before.
+Replot the stripchart, but instead of overlaying a boxplot, use stat_summary to just add a bar to indicate the mean. 
+===
+###Load the data in treatments.csv.
+===
+```{r}
+treatment_data= read.csv("treatments.csv")
+head(treatment_data)
+```
+###Plot a stripchart of the four conditions using geom_jitter()
+===
+```{r}
+treatment_data %>% ggplot(aes(x=Sample,y=Measure))+geom_jitter(col="red")
+```
+###Overlay a boxplot of the same data along with the raw points
+===
+
+```{r}
+treatment_data %>% ggplot(aes(x=Sample,y=Measure))+geom_boxplot(size=.5)
+```
+
+
+```{r}
+treatment_data %>% ggplot(aes(x=Sample,y=Measure,color=Sample))+geom_boxplot(size=.5,col="gray")+geom_jitter(width=1,size=3)
+```
+
+
+```{r}
+treatment_data%>%  ggplot(aes(x=Sample,y=Measure,fill= Sample)) + geom_bar(stat="summary" ,col="blue2",width=1)
+
+```
+###Plot the same data as a barplot with errorbars for the Standard Error of the Mean (SEM)
+Use a geom_bar for the barplot with stat=”summary” and then use stat_summary with a geometry of errorbar with the default mean_se values.
+===
+```{r}
+treatment_data%>%  ggplot(aes(x=Sample,y=Measure,fill= Sample)) + geom_bar(stat="summary" ,col="blue2",width=1)+stat_summary(geom="errorbar")
+
+```
+
+
+
+
+
+
+###Take the same treatment data and pre-calculate a mean and sd from it using group_by and summarise.  Use these pre-calculated values to plot out the same barplot as before.
+===
+
+```{r}
+treatment_data %>% group_by(Sample)%>%summarize(avg_Measure = mean(Measure),sd_Measure = sd(Measure))
+
+```
+
+
+
+```{r}
+treatment_data %>% group_by(Sample)%>%summarize(avg_Measure = mean(Measure),sd_Measure = sd(Measure))%>%  ggplot(aes(x=Sample,y=sd_Measure)) + geom_bar(stat="summary" ,col="blue2",fill="yellow",width=1)+stat_summary(fun = mean)+stat_summary(geom="errorbar")
+
+```
+
+
+```{r}
+treatment_data %>% group_by(Sample)%>%summarize(avg_Measure = mean(Measure),sd_Measure = sd(Measure))%>%  ggplot(aes(x=Sample,y=avg_Measure,ymin=avg_Measure-sd_Measure,ymax=avg_Measure+sd_Measure,fill= Sample)) + geom_bar(stat="identity" ,col="blue2",width=1)+geom_errorbar()
+
+```
+
+# Exercise 4: Faceted smoothing
+
+Load iris dataset and reproduce this plot.
+
+```{r}
+data(iris)
+
+iris
+```
+
+```{r}
+iris %>% ggplot(aes(x = Sepal.Length, y = Sepal.Width))+ geom_point(aes(col =Species),size = 1)+geom_density2d(aes(col =Species))+theme_light()+ggtitle("IRIS")
+```
+
+```{r}
+# iris %>% ggplot(aes(x = Petal.Length, y = Petal.Width))+ geom_point(aes(col ="All"),size = 1)+ geom_smooth(se = TRUE) 
+```
+
+```{r}
+# install.packages("patchwork")
+```
+
+```{r}
+library(patchwork)
+```
+
+
+```{r}
+# install.packages("gridExtra")
+```
+```{r}
+library(gridExtra)
+```
+
+```{r}
+
+plot_1 <- ggplot(iris, aes(x = Petal.Length, y = Petal.Width, color = "All")) +
+  geom_point() +
+  geom_smooth(se = TRUE) +
+  labs(
+       x = "Petal Length",
+       y = "Petal Width")
+
+
+plot_2 <- ggplot(iris, aes(x = Petal.Length, y = Petal.Width, color = Species)) +
+  geom_point() +
+  geom_smooth(se = TRUE) +
+  facet_wrap(. ~ Species, scales = "free") +
+  xlab("Petal Length")+
+  ylab("Petal Width")
+  # labs(
+  #      x = "Petal Length",
+  #      y = "Petal Width")
+
+
+grid.arrange(plot_1, plot_2,nrow=2)
+
+# plot_1+ plot_2
+```
+
+
+
+```{r}
+iris %>% mutate(Species="All") %>% bind_rows(iris)%>%ggplot( aes(x = Petal.Length, y = Petal.Width, color = Species)) +
+  geom_point() +
+  geom_smooth(se = TRUE) +
+  facet_wrap(. ~ Species, scales = "free")+labs(
+       x = "Petal Length",
+       y = "Petal Width")
+
+```
+
+# Exercise 5: Bubble-plot
+
+Load mtcars dataset and reproduce this plot.
+===
+
+
+```{r}
+mtcars 
+```
+
+
+```{r}
+
+mtcars %>% ggplot(aes(x = mpg, y = qsec, size = disp, color = factor(am))) +
+  geom_point(alpha = 0.7,) +
+  scale_size_continuous() +  # Adjust the range of bubble sizes
+  labs(
+    title = "Bubble Plot with ggplot2 for ",
+    x = "miles per gallon",
+    y = "1/4th mile time",
+    size = "Displacement",
+    color = "gear",
+  )
+
+```
+
+
+```{r}
+mtcars %>%
+  ggplot(aes(x = mpg, y = qsec, size = disp, color = factor(am))) +
+  geom_point(alpha = 0.7) + 
+  scale_size_continuous(name = "Displacements") +
+  scale_color_discrete(name = "Gear", breaks = c(0, 1), labels = c("Manual", "Automatic")) +
+  labs(
+    title = "Bubble Plot with ggplot2",
+    x = "Miles per Gallon",
+    y = "1/4th Mile Time"
+  ) 
+
+
+```
+
+
+# Exercise 6: Economist style
+
+Load economics dataset and reproduce this plot. (Hint: you will need the ggthemes package)
+
+
+```{r}
+economics 
+```
+
+
+```{r}
+# install.packages("ggthemes")
+```
+
+
+```{r}
+economics %>% ggplot(aes(x=date,y=uempmed))+geom_line()+theme_linedraw()+labs(
+    title = "Median duration of unemployment[weeks]",
+    y = "Median duration of unemployment[weeks]",
+    
+  )+
+theme(plot.background = element_rect(fill = "grey92"))+
+theme(plot.title = element_text(face = "bold"))+
+theme(axis.title.y = element_text(face="bold"))+
+theme(axis.title.x = element_blank())+
+  theme( panel.grid.major.x = element_blank())+
+  theme(panel.grid.minor.x = element_blank())+
+  theme(panel.grid.minor.y = element_blank())+
+  theme(panel.grid.major.y = element_line(color="gray80",size = .8 ) )+
+  ylim(0, 25)
+
+
+
+
+```
+
+
+
+# Exercise 7: Msleep dataset
+
+Load msleep dataset.
+
+1. Plot out a scatterplot of brainwt vs bodywt. 
+
+2. Plot out the distribution of awake for all categories of vore on the same plot. Change the transparency of colors.
+
+3. Plot out a boxplot of sleep_total for all categories of vore, colored by vore. 
+
+4. Plot out a barplot of the number of mammals for all categories of conservation.
+
+5. Plot out a scatterplot of sleep_total vs bodywt in log scale. Use a facet to separate the data for the categories of vore (except NA).
+
+===
+#### Load msleep dataset.
+
+```{r}
+msleep
+```
+
+
+#### 1. Plot out a scatterplot of brainwt vs bodywt. 
+```{r}
+msleep %>% ggplot(aes(x=brainwt,y=bodywt)) + geom_point(col="red")+
+ggtitle("scatterplot of brainwt vs bodywt")+
+xlab("Brainweight")+
+ylab("Bodyweight")
+
+```
+```{r}
+msleep %>% ggplot(aes(x=log10(brainwt),y=log10(bodywt))) + geom_point(col="red")+
+ggtitle("scatterplot of brainwt vs bodywt in log10 scale")+
+xlab("Brainweight")+
+ylab("Bodyweight")
+
+```
+#### 2. Plot out the distribution of awake for all categories of vore on the same plot. Change the transparency of colors.
+
+```{r}
+msleep %>% ggplot(aes(x=vore,y=awake,))+
+geom_bar( aes(fill=vore),col="blue2",stat="identity",width=1,alpha=0.4)
+  
+```
+
+
+
+
+#### 3. Plot out a boxplot of sleep_total for all categories of vore, colored by vore.
+
+
+```{r}
+msleep %>% ggplot(aes(x=vore,y=sleep_total))+geom_boxplot(aes(col=vore))+
+  ggtitle("boxplot of sleep_total for all categories of vore")
+```
+
+
+#### 4. Plot out a barplot of the number of mammals for all categories of conservation.
+
+
+```{r}
+conservation_counts_1 <- msleep %>%group_by(conservation) %>% summarise(count = n())
+conservation_counts_1
+```
+```{r}
+ggplot(conservation_counts_1, aes(x = conservation, y = count)) +
+  geom_bar(aes(fill= conservation),stat = "identity", color = "black") +
+  labs(
+    title = "Number of Mammals for Each Conservation Category",
+    x = "Conservation Category",
+    y = "Number of Mammals"
+  ) 
+```
+
+
+#### 5. Plot out a scatterplot of sleep_total vs bodywt in log scale. Use a facet to separate the data for the categories of vore (except NA).
+
+
+
+
+```{r}
+
+msleep_filtered <- msleep %>%
+  filter(!is.na(vore))
+
+ggplot(msleep_filtered, aes(x = log10(bodywt), y = log10(sleep_total),col=vore)) +
+  geom_point() +
+  labs(
+    title = "Scatterplot of log(Sleep Total) vs log(Body Weight) by Vore",
+    x = "log(Body Weight)",
+    y = "log(Sleep Total)"
+  )
+```
+
+
+```{r}
+
+msleep_filtered <- msleep %>%
+  filter(!is.na(vore))
+
+ggplot(msleep_filtered, aes(x = log10(bodywt), y = log10(sleep_total),color = vore)) +
+  geom_point() +
+  facet_wrap(~ vore, scales = "free") +
+  labs(
+    title = "Scatterplot of log(Sleep Total) vs log(Body Weight) by Vore",
+    x = "log(Body Weight)",
+    y = "log(Sleep Total)"
+  )
+```
+
+

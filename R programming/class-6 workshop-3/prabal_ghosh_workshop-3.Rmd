@@ -1,0 +1,359 @@
+---
+title: "Prabal Ghosh Workshop-3_R Notebook"
+output:
+  html_document:
+    df_print: paged
+---
+# Workshop 3 : dplyr & ggplot
+
+## Exercise 1: Filtering and selecting with dplyr
+
+Read in the genomes.csv file into a variable called genomes.
+ 
+Perform the following operations:
+ 
+Make a list of the 5 organisms with the largest genomes 
+ 
+Of the organisms which have more than 40 chromosomes which one comes first, alphabetically? 
+ 
+Do any organisms containing a plasmid, also have more than one chromosome?
+ 
+Make a version of the data containing only the columns from Chromosomes onwards.
+ 
+Move the Size column to the front of the tibble.
+ 
+Select just the columns which start with "O”.
+ 
+How many different groups are there? 
+
+
+```{r}
+library(dplyr)
+library(datasets)
+```
+
+```{r}
+library(ggplot2)
+```
+
+```{r}
+genom_data<- read.csv("C:\\Users\\praba\\Desktop\\uca1\\M1\\R programming\\class-6 workshop-3\\genomes.csv")
+head(genom_data,10)
+```
+### 1.Make a list of the 5 organisms with the largest genomes 
+
+```{r}
+genom_data_1<- arrange(genom_data,desc(Size))
+head(genom_data_1,5)
+```
+### 2.Of the organisms which have more than 40 chromosomes which one comes first, alphabetically? 
+
+
+```{r}
+data_1<-filter(genom_data, Chromosomes >= 40)
+head(arrange(data_1,Organism),1)
+
+```
+### 3.Do any organisms containing a plasmid, also have more than one chromosome?
+
+```{r}
+genom_data%>% filter(Plasmids != 0 & Chromosomes>1)
+
+```
+### 4.Make a version of the data containing only the columns from Chromosomes onwards.
+
+```{r}
+# names(genom_data)
+genom_data %>% select(Chromosomes:Assemblies)
+```
+
+```{r}
+genom_data %>% select(4:7)
+```
+### 5.Move the Size column to the front of the tibble.
+
+```{r}
+
+genom_data_Sorted = genom_data %>% select("Size", everything()) 
+genom_data_Sorted
+```
+### 6.Select just the columns which start with "O”.
+
+```{r}
+genom_data %>% select(starts_with('O'))
+```
+### 7.How many different groups are there? 
+
+```{r}
+genom_data %>% distinct(Groups) %>% nrow()
+                                            
+```
+
+
+# Exercise 2: More clever filtering
+
+Read in the “cancer_stats.csv” file into a variable called cancer then answer the following questions.
+ 
+For which Digestive System cancer types are there more female cases than male cases?
+ 
+Which cancer types (Class and Site) have no data (NA) for males? 
+ 
+Which cancer types (Class and Site) have no data (NA) for females?
+ 
+Which cancer type has the best survival rate for males? 
+ 
+Which cancer Sites have “acute” in their names?
+ 
+Out of tongue, kidney, breast and pancreas, which is classed as a soft tissue cancer?
+
+### 1.Read in the “cancer_stats.csv” file into a variable called cancer then answer the following questions.
+
+```{r}
+cancer_data_1<- read.csv("C:\\Users\\praba\\Desktop\\uca1\\M1\\R programming\\class-6 workshop-3\\cancer_stats.csv")
+head(cancer_data_1,15)
+```
+### 2.For which Digestive System cancer types are there more female cases than male cases?
+
+```{r}
+
+cancer_data_1 %>% filter(Class=="Digestive System") %>% filter(Female.Cases>Male.Cases) %>% select(Class, Site,Male.Cases,Female.Cases)
+```
+### 3.Which cancer types (Class and Site) have no data (NA) for males? 
+
+```{r}
+cancer_data_1 %>% filter(is.na(Male.Cases)) 
+
+```
+
+### 4.Which cancer types (Class and Site) have no data (NA) for females?
+
+```{r}
+
+cancer_data_1 %>% filter(is.na(Female.Cases)) 
+
+
+
+```
+### 5.Which cancer type has the best survival rate for males? 
+
+```{r}
+library(tidyr)
+
+cancer_data_1 %>% drop_na(Male.Cases) %>% mutate(male_raio=Male.Deaths/Male.Cases) %>% arrange(male_raio)%>% slice(1)
+```
+
+### 6.Which cancer Sites have “acute” in their names?
+
+```{r}
+cancer_data_1 %>% filter(grepl('acute', Site))
+library(stringr)
+cancer_data_1 %>% filter(str_detect(Site,"acute"))
+
+```
+
+
+### 7.Out of tongue, kidney, breast and pancreas, which is classed as a soft tissue cancer?
+
+
+```{r}
+# vec1=c('tongue', 'kidney', 'breast','pancreas')
+cancer_data_1 %>% filter(Class=='soft tissue') %>% filter(Site== 'tongue'| Site== 'kidney'| Site=='breast'|Site== 'pancreas' )
+```
+```{r}
+vec1=c('tongue', 'kidney', 'breast','pancreas')
+cancer_data_1 %>% filter(Class=='soft tissue') %>% filter(tolower(Site) %in% vec1 )
+```
+
+
+
+# Exercise 3: dplyr and ggplot
+
+Load the starwars dataset.
+
+Which variable (column) has the highest number of missing values?
+
+How many humans contains the starwars dataset? show them by gender.
+
+From which homeworld do the most individuals (rows) come from? 
+
+Create a barplot of the gender distribution of the starwars Universe, set the title : "Gender distribution of the sw Universe". Make the colors of the columns depend on the gender, modify the colour using the command : scale_fill_manual.
+
+Draw the densities for the height variable of feminines and masculines only.
+
+Draw a segmented barplot for the variable 'sex'. The colors depend on the hair colours. Show the proportions [0,1] on the y-axis.
+
+
+```{r}
+data(starwars)
+head(starwars)
+```
+### 2.Which variable (column) has the highest number of missing values?
+
+```{r}
+a<-sort( colSums( sapply(starwars, is.na) ) )
+a
+
+```
+### 2.How many humans contains the starwars dataset? show them by gender.
+
+
+```{r}
+starwars %>% filter( species == 'Human' ) %>% group_by(gender) %>% summarise(count_m_f=(n=n()))
+```
+
+### 3.From which homeworld do the most individuals (rows) come from? 
+
+```{r}
+# starwars
+starwars %>% group_by(homeworld) %>% summarise(count_homeworld=(n=n())) %>% arrange(desc(count_homeworld))
+
+```
+### 4.Create a barplot of the gender distribution of the starwars Universe, set the title : "Gender distribution of the sw Universe". Make the colors of the columns depend on the gender, modify the colour using the command : scale_fill_manual.
+
+
+```{r}
+starwars %>% drop_na(gender) %>% group_by(gender) %>% summarise(count_m_f=(n=n()))%>%ggplot(aes(x=gender,y=count_m_f),)+
+  geom_bar(aes(fill=gender),stat = "identity", color = "brown") +
+  labs(
+    title = "Gender distribution of the sw Universe",
+    xlab = "Gender",
+    ylab= "Count"
+  )+theme_light()
+```
+
+### 5.Draw the densities for the height variable of feminines and masculines only.
+
+
+```{r}
+starwars %>% drop_na(gender) %>% ggplot(aes(x=height,fill=gender))+geom_density(aes(col=gender))+theme_light()
+```
+
+### 6.Draw a segmented barplot for the variable 'sex'. The colors depend on the hair colours. Show the proportions [0,1] on the y-axis.
+
+```{r}
+# starwars
+
+starwars %>% ggplot(aes(x=sex))+
+  geom_bar(aes(fill=hair_color),position  = "fill", stat="count",col="Brown") +
+  labs(
+    title = "Bar Plot",
+  )
+```
+```{r}
+# starwars
+
+starwars %>% drop_na(hair_color,sex) %>% ggplot(aes(x=sex))+
+  geom_bar(aes(fill=hair_color),position  = "fill", stat="count",col="Brown") +
+  labs(
+    title = "Bar Plot",
+  )
+```
+
+# Exercise 4: festival
+
+Read in the festival.csv file into a variable called festival.
+
+1.Restructure and clean up the data
+	a- In which tidy format, the data are ? 
+	b- Change this format in order to have observation per row and remove NA values (The 2 new columns must be day and cleanliness)
+
+2. Draw a stripchart (geom_jitter) of the cleanliness values for males and females separately.
+	a- Split the plot based on the day of the festival to see the effect this had on the data
+	b- Personalize the point colors for males and females
+	c- Add a line to show the mean
+
+3. Add a new column called attendance to the data to say how many days people attended the festival. 
+
+4. Now redraw the plot but faceting by both attendance and day
+
+
+```{r}
+festival_data<- read.csv("C:\\Users\\praba\\Desktop\\uca1\\M1\\R programming\\class-6 workshop-3\\festival.csv")
+head(festival_data)
+```
+### 1.Restructure and clean up the data
+	a- In which tidy format, the data are ? 
+	b- Change this format in order to have observation per row and remove NA values (The 2 new columns must be day and cleanliness)
+	
+```{r}
+library(tidyr)
+```
+
+```{r}
+festival_data_tidy <- festival_data %>% pivot_longer(cols=day1:day3, names_to="day", values_to="cleanliness") %>% drop_na(cleanliness)
+# dim(festival_data_tidy)
+festival_data_tidy
+```
+```{r}
+# dim(df_titanic_drop)
+festival_data_drop <- festival_data %>% pivot_longer(cols=day1:day3, names_to="day", values_to="cleanliness") %>% na.omit()
+# dim(festival_data_drop)
+festival_data_drop
+```
+
+
+### 2. Draw a stripchart (geom_jitter) of the cleanliness values for males and females separately.
+	a- Split the plot based on the day of the festival to see the effect this had on the data
+	b- Personalize the point colors for males and females
+	c- Add a line to show the mean
+	
+```{r}
+festival_data_tidy<-festival_data %>% pivot_longer(cols=day1:day3, names_to="day", values_to="cleanliness") %>% drop_na(cleanliness)
+
+festival_data_tidy %>%ggplot()+geom_jitter(aes(x=gender, y= cleanliness,col=gender))+
+  geom_hline(yintercept = mean(festival_data_tidy$cleanliness, na.rm=TRUE), color='blue', lty='dashed', lwd=1)+
+  facet_wrap(~ day, scales = "free")+
+  labs(
+    title= "stripchart of the cleanliness values for males and females",
+  
+  )+
+  theme(legend.position="right")
+
+```
+	
+	
+### 3. Add a new column called attendance to the data to say how many days people attended the festival. 
+
+```{r}
+festival_data_clean<- festival_data %>% pivot_longer(cols=day1:day3, names_to="day", values_to="cleanliness") %>% drop_na(cleanliness)
+festival_data_clean_data<-festival_data_clean %>% group_by(person) %>% summarise(attendance=(n=n()))
+festival_data_clean_data
+
+```
+
+
+
+
+### 4. Now redraw the plot but faceting by both attendance and day
+
+```{r}
+
+festival_data_clean_data_join <- left_join(festival_data_drop, festival_data_clean_data, by ='person')
+festival_data_clean_data_join
+```
+```{r}
+# festival_data_clean_data_join <- left_join(festival_data, festival_data_clean_data, by ='person')
+
+festival_data_clean_data_join %>%ggplot()+geom_jitter(aes(x=gender, y= cleanliness,col=gender))+ facet_wrap(~ day+attendance, scales = "free")+
+  labs(
+    title= "the attendance values for males and females",
+  
+  )+
+  theme(legend.position="right")
+```
+```{r}
+festival_data_clean<- festival_data %>% pivot_longer(cols=day1:day3, names_to="day", values_to="cleanliness") %>% drop_na(cleanliness)
+festival_data_clean_data_day<-festival_data_clean %>% group_by(day) %>% summarise(attendance=(n=n()))
+festival_data_clean_data_day
+
+```
+
+```{r}
+
+festival_data_clean_data_day %>%ggplot()+geom_bar(aes(x=day, y= attendance,fill=day),col='Brown',stat='identity')+
+  labs(
+    title= "bar plot of the attendance based on days",
+  
+  )+
+  theme(legend.position="right")
+```

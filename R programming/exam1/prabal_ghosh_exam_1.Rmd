@@ -1,0 +1,318 @@
+---
+title: "PRABAL GHOSH R EXAM-1"
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+---
+
+
+
+#Part I – Explore the data
+
+```{r}
+
+library(ggplot2)
+```
+
+```{r}
+library("dplyr")
+```
+
+
+
+```{r}
+data_small <- read.csv('C:\\Users\\praba\\Desktop\\uca1\\M1\\R programming\\exam1\\people_habits_dataset.csv')
+
+```
+
+
+```{r}
+data_small
+```
+
+
+
+##1.What are the dimensions of the data?
+
+```{r}
+dim(data_small)
+```
+
+##2.What are the types of columns? What is the difference between a string and a factor? Show descriptive statistics of the data.
+
+If x is a string it can take any value. If x is a factor it can only take a values from a list of all levels. That makes these variables more memory effecient as well.
+
+```{r}
+str(data_small)
+```
+
+
+
+```{r}
+summary(data_small)
+```
+
+
+##3.Is there any NA?
+
+
+```{r}
+which(is.na(data_small))
+print ("Row and Col positions of NA values") 
+which(is.na(data_small), arr.ind=TRUE)
+```
+
+
+#Part II – Data transformation
+
+
+
+##4.Create a new variable called age from the variable dob to obtain the age of individuals based on their date of birth. (Hint: you can use the function year() from lubridate package to get the year of the date of birth).
+
+
+
+```{r}
+ 
+# install.packages("lubridate")
+
+```
+```{r}
+library(lubridate)
+```
+
+
+
+```{r}
+choices = lubridate::year(Sys.Date())
+data_small_1<- data_small %>% mutate(data_small, age= (choices-year(data_small$dob) ))
+data_small_1
+
+```
+
+
+##5.Calculate the body mass index (BMI) for each of our patients using the formula BMI=Weight/(Height)2, where the weight is measured in kilograms and the height is in meters
+
+
+```{r}
+bmi <- function(weight, height) {
+height/100 -> height
+height^2 -> height
+return(weight/height)
+}
+bmi_result <- bmi(data_small$weight, data_small$height)
+bmi_result
+```
+
+
+
+
+#6.Create a new variable to indicate which individuals are overweight, i.e. those with a BMI over 25.
+
+```{r}
+data_small_1['bmi_result_f']=bmi_result
+data_small_1 %>% filter(bmi_result_f>25)
+
+```
+
+```{r}
+
+data_small_1<- data_small_1 %>% mutate(overweight = if_else(bmi_result_f>25, 1, 0 ) )
+data_small_1
+
+
+```
+
+##7.Some variables are treated as integers when they should be categorical variables. Change them into factors. 
+
+
+```{r}
+data_small$dob <- as.factor(data_small$dob)
+data_small
+```
+
+
+
+8.Change levels of the gender variable, replacing 1 and 2 with female and male.
+
+
+```{r}
+data_small_1$gender <- cut(data_small_1$gender, 2, labels=c('female','male'))
+data_small_1
+```
+
+
+
+##9.Group your data by gender and gluc. For each group, compute the mean and standard deviation of weight, then plot out a bar plot of computed means with error bars and use a facet to separate the data for the two genders.
+
+
+```{r}
+
+data_small %>% group_by(gender,gluc)%>%summarise(avg_weight = mean(weight),sd_weight = sd(weight))
+```
+
+
+```{r}
+
+data_small %>% group_by(gender,gluc)%>%summarise(avg_weight = mean(weight),sd_weight = sd(weight))%>%  ggplot(aes(x=gender,y=avg_weight)) + geom_bar(stat="summary" ,col="blue2",fill="yellow",width=1)+stat_summary(fun = mean)+stat_summary(geom="errorbar")
+```
+
+
+
+
+#Part III – Plotting (5 points)
+
+##10.Plot a jitter plot of the weight of individuals for both categories of active.
+
+
+```{r}
+data_small %>% ggplot(aes(x = active, y = weight))+ geom_jitter(aes(col =active),show.legend = TRUE)
+```
+
+
+##11.Plot out a grouped barplot of the number of individuals in the 3 categories of gluc, colored by active.
+
+
+```{r}
+data_small%>% group_by(gluc) %>% summarise(count_m_f=(n=n()))
+```
+
+```{r}
+
+p1<- data_small_1%>% ggplot(aes(x=gluc,fill=gender, col=gender))+
+  geom_bar(position="dodge")
+p1
+
+
+```
+```{r}
+data_small
+```
+
+
+```{r}
+
+data_small%>%ggplot(aes(x=gluc,y=active))+
+  geom_bar(stat = "identity")
+```
+
+
+
+12.Plot out a boxplot of age for both categories of alco.
+
+
+```{r}
+data_small_1
+```
+
+
+```{r}
+library(patchwork)
+library(gridExtra)
+library(ggplot2)
+library("dplyr")
+```
+
+
+
+```{r}
+data_small_1$alco <- as.factor(data_small_1$alco)
+data_small_1
+# data_small
+```
+
+```{r}
+
+data_small_1 %>% ggplot(aes(x=alco,y=age))+geom_boxplot(aes(col=alco))+
+  ggtitle("boxplot of age for all categories of alco")
+
+```
+
+#13.Plot out a violin plot of the BMI for both males and females.
+
+
+```{r}
+data_small_1
+```
+
+
+```{r}
+theme_set(theme_bw(base_size=12))
+data_small_1 %>% ggplot(aes(y = bmi_result_f, x = gender),) + geom_violin(col="blue2",fill="yellow")
+```
+
+
+
+
+
+#Part IV – Selecting columns (3 point)
+
+##14.Select the columns 1 and 4.
+
+```{r}
+data_small[c(1,4)]
+```
+
+15.Select all the columns ending with the letter “e”.
+
+```{r}
+data_small %>% select(ends_with('e'))
+
+```
+16.Select all the columns except smoke.
+
+```{r}
+data_small %>% select(-smoke)
+
+```
+
+
+#Part V – Filtering rows (4 point) 
+
+##17.Filter the rows for males aged 64 and over.
+
+```{r}
+library(dplyr) 
+```
+
+
+
+```{r}
+data_small_1 %>% filter(age>65 & gender=='male' )
+```
+
+##18.Filter the rows for alcoholics or smokers.
+
+
+```{r}
+data_small_1 %>% filter(alco==1 | smoke==1)
+```
+
+19.How many people smoke, drink and are active?
+
+```{r}
+nrow(data_small_1%>% filter(smoke ==1 & alco==1 & active==1))
+
+```
+
+
+
+
+20.How many patients are overweight? Show them by gender in a table.
+
+
+```{r}
+d1<-data_small_1[c("gender","overweight")]
+d1%>% group_by(gender) %>% summarise(count_m_f=(n=n()))
+
+
+
+```
+
+
+
+
+
+
+
+

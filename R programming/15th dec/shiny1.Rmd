@@ -1,0 +1,145 @@
+---
+title: "Prabal Notebook"
+output:
+html_document:
+df_print: paged
+toc: yes
+toc_float: yes
+theme: yet
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+```{r}
+plot(cars)
+```
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+```{r}
+
+setwd('/Users/praba/Desktop/uca1/M1/R programming/class-5 lecture workshop-2')
+child_data<- read.csv("Child_Variants.csv")
+head(child_data, n=3)
+
+
+```
+
+```{r}
+library(readr)
+```
+
+
+```{r}
+install.packages("readr")
+```
+
+```{r}
+library(shiny)
+```
+
+```{r}
+library(dplyr)
+library(ggplot2)
+```
+
+
+
+```{r}
+data_1<- read.csv("C:\\Users\\praba\\Desktop\\uca1\\M1\\R programming\\15th dec\\advs.csv")
+head(data_1,15)
+```
+```{r}
+data_1 %>% filter(PARAM == "Diastolic Blood Pressure (mmHg)")
+```
+
+
+```{r}
+data_1 %>% filter(PARAM == "Diastolic Blood Pressure (mmHg)" & USUBJID == '01-701-1015') %>% ggplot(aes(VISITNUM,AVAL)) + geom_point(col="black")+
+xlab("VISITNUM")+
+ylab("AVAL")
+
+```
+
+```{r}
+data_2<- read.csv("C:\\Users\\praba\\Desktop\\uca1\\M1\\R programming\\18th dec\\datasets-20231218\\airbnb.csv")
+head(data_2)
+```
+
+
+```{r}
+unique(data_2$neighbourhood_group)
+```
+
+
+
+
+```{r}
+max(data_2$price)
+```
+
+
+
+```{r}
+install.packages('tidyverse')
+```
+
+
+```{r}
+head(data_2,50)
+```
+number_of_reviews
+minimum_nights
+
+```{r}
+data_2 %>% filter(room_type == "Entire home/apt" & (minimum_nights >= 1 & minimum_nights <= 20) &(price>= 700 & price<=1250) ) %>% ggplot(aes(number_of_reviews,minimum_nights)) + geom_point(aes(col=room_type))+
+xlab("minimum_nights")+
+ylab("number_of_reviews")
+```
+
+
+
+
+
+```{r}
+data_2 %>% filter(neighbourhood_group == "Queens" ) %>% ggplot(aes(room_type)) + geom_bar(aes(fill=room_type))+
+xlab("room_type")+
+ylab("count")
+
+```
+
+```{r}
+data_2 %>% filter(neighbourhood_group == "Queens" ) %>% ggplot(aes(room_type)) + geom_bar(aes(fill=room_type))+
+xlab("room_type")+
+ylab("count")
+
+```
+
+
+```{r}
+data_3<- read.csv("C:\\Users\\praba\\Desktop\\uca1\\M1\\R programming\\exam 21st dec\\winequality-red.csv",header=TRUE, sep = ";")
+head(data_3,10)
+```
+```{r}
+unique(data_3$quality)
+```
+```{r}
+data_3 %>% filter(quality == 4 ) %>% ggplot(aes(citric.acid,pH)) + geom_point(aes(col=quality))+
+xlab("minimum_nights")+
+ylab("number_of_reviews")
+```
+
+
+
+```{r}
+max(data_3$free.sulfur.dioxide)
+```
+```{r}
+max(as.numeric(data_3$free.sulfur.dioxide))
+```
+
